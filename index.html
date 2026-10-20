@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe - DevOps Project</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .game {
+      background: #ffffff15;
+      padding: 28px;
+      border-radius: 20px;
+      width: min(92vw, 380px);
+    }
+    h1 { color: #62e6c5; }
+    #status { min-height: 24px; margin: 20px 0; }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .cell {
+      height: 90px;
+      font-size: 38px;
+      font-weight: bold;
+      border: 0;
+      border-radius: 12px;
+      background: white;
+      color: #243b55;
+      cursor: pointer;
+    }
+    .cell:disabled { cursor: default; }
+    .reset {
+      margin-top: 20px;
+      padding: 12px 24px;
+      border: 0;
+      border-radius: 8px;
+      background: #62e6c5;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    footer { font-size: 12px; margin-top: 20px; color: #ddd; }
+  </style>
+</head>
+<body>
+  <main class="game">
+    <h1>🎮 Tic Tac Toe</h1>
+    <p>DevOps CI/CD Project</p>
+    <p id="status">Player X's turn</p>
+    <div class="board">
+      <button class="cell" aria-label="Cell 1"></button>
+      <button class="cell" aria-label="Cell 2"></button>
+      <button class="cell" aria-label="Cell 3"></button>
+      <button class="cell" aria-label="Cell 4"></button>
+      <button class="cell" aria-label="Cell 5"></button>
+      <button class="cell" aria-label="Cell 6"></button>
+      <button class="cell" aria-label="Cell 7"></button>
+      <button class="cell" aria-label="Cell 8"></button>
+      <button class="cell" aria-label="Cell 9"></button>
+    </div>
+    <button class="reset" id="reset">Play Again</button>
+    <footer>Built with Docker & CI/CD 🚀</footer>
+  </main>
+  <script>
+    const cells = [...document.querySelectorAll(".cell")];
+    const status = document.getElementById("status");
+    const winningLines = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+    let player = "X";
+    let finished = false;
+
+    function play(index) {
+      if (finished || cells[index].textContent) return;
+      cells[index].textContent = player;
+
+      const won = winningLines.some(line =>
+        line.every(i => cells[i].textContent === player)
+      );
+
+      if (won) {
+        status.textContent = `Player ${player} wins! 🎉`;
+        finished = true;
+        cells.forEach(cell => cell.disabled = true);
+      } else if (cells.every(cell => cell.textContent)) {
+        status.textContent = "It's a draw!";
+        finished = true;
+      } else {
+        player = player === "X" ? "O" : "X";
+        status.textContent = `Player ${player}'s turn`;
+      }
+    }
+
+    cells.forEach((cell, index) =>
+      cell.addEventListener("click", () => play(index))
+    );
+
+    document.getElementById("reset").addEventListener("click", () => {
+      cells.forEach(cell => {
+        cell.textContent = "";
+        cell.disabled = false;
+      });
+      player = "X";
+      finished = false;
+      status.textContent = "Player X's turn";
+    });
+  </script>
+</body>
+</html>
